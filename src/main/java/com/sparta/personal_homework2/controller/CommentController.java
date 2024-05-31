@@ -23,4 +23,14 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(scheduleId, request));
     }
 
+    @PatchMapping("{commentId}")
+    public ResponseEntity<CommentResponse> update(
+            @PathVariable(name="scheduledId") long scheduleId,
+            @PathVariable(name="commentId") long commentId,
+            @RequestBody CommentUpdateRequest request){
+
+        return ResponseEntity.ok().body(service.update(scheduleId, commentId, request));
+    }
+
+
 }

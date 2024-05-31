@@ -28,3 +28,28 @@ public class CommentService {
         Comment comment = commentRepository.save(new Comment(request.getComment(), request.getUsername(), schedule));
         return CommentResponse.toDto(comment);
     }
+
+    @Transactional
+    public CommentResponse update(Long scheduleId, Long commentId, CommentUpdateRequest request){
+
+        if(commentId==null || scheduleId==null){
+            throw new IllegalArgumentException("선택한 일정이나 댓글 ID가 입력되지 않았습니다.");
+        }
+
+        scheduleService.findScheduleById(scheduleId);
+        .orElseThrow(() -> new IllegalArgumentException(("해당 id에 맞는 일정 데이터가 없습니다. 아이디 : "+scheduleId)));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow() -> new DataNotFoundException("해당 댓글이 DB에 존재하지 않습니다.")
+
+
+        if (!Objects.equals(comment.getUsername(), request.getUsername())) {
+            throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
+        }
+
+        comment.update(request.getComment());
+        return CommentResponse.toDto(comment);
+    }
+
+    }
+}
